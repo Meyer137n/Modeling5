@@ -1,6 +1,8 @@
 #include "Branch.h"
 #include <iostream>
 
+//РїСЂРѕР±Р»РµРјР° РёР·-Р·Р° Р·Р°С†РёРєР»РёРІР°РЅРёСЏ РІ РјРµС‚РѕРґР°С… buildPathFromEdge Рё buildPathToEdge, С…Р· РєР°Рє РёСЃРїСЂР°РІРёС‚СЊ
+
 bool Branch::allIsNull()
 {
 	for (auto row : cost)
@@ -19,9 +21,9 @@ vector<pair<int, int>> Branch::getPath()
 	Branch* current = this;
 	while (current != nullptr && current->parent != nullptr) {
 		if (current->includeEdge && current->edge != make_pair(-1, -1)) {
-			path.push_back(current->edge);  // Добавляем ребро в путь
+			path.push_back(current->edge);  // Г„Г®ГЎГ ГўГ«ГїГҐГ¬ Г°ГҐГЎГ°Г® Гў ГЇГіГІГј
 		}
-		current = current->parent;  // Поднимаемся к родителю
+		current = current->parent;  // ГЏГ®Г¤Г­ГЁГ¬Г ГҐГ¬Г±Гї ГЄ Г°Г®Г¤ГЁГІГҐГ«Гѕ
 	}
 	return path;
 }
@@ -29,11 +31,11 @@ vector<pair<int, int>> Branch::getPath()
 vector<pair<int, int>> Branch::buildRoute(const vector<pair<int, int>>& edges)
 {
 	if (!edges.size()) return vector<pair<int, int>>{};
-	// Словарь для хранения всех ребер
+	// Г‘Г«Г®ГўГ Г°Гј Г¤Г«Гї ГµГ°Г Г­ГҐГ­ГЁГї ГўГ±ГҐГµ Г°ГҐГЎГҐГ°
 	unordered_map<int, int> nextVertex;
 	unordered_map<int, int> inDegree;
 
-	// Строим карту, где ключ - это вершина, а значение - вершина, в которую она ведет
+	// Г‘ГІГ°Г®ГЁГ¬ ГЄГ Г°ГІГі, ГЈГ¤ГҐ ГЄГ«ГѕГ· - ГЅГІГ® ГўГҐГ°ГёГЁГ­Г , Г  Г§Г­Г Г·ГҐГ­ГЁГҐ - ГўГҐГ°ГёГЁГ­Г , Гў ГЄГ®ГІГ®Г°ГіГѕ Г®Г­Г  ГўГҐГ¤ГҐГІ
 	for (const auto& edge : edges) {
 		nextVertex[edge.first] = edge.second;
 		inDegree[edge.second]++;
@@ -42,7 +44,7 @@ vector<pair<int, int>> Branch::buildRoute(const vector<pair<int, int>>& edges)
 		}
 	}
 
-	// Ищем вершину, которая не входит в другие ребра (она будет начальной)
+	// Г€Г№ГҐГ¬ ГўГҐГ°ГёГЁГ­Гі, ГЄГ®ГІГ®Г°Г Гї Г­ГҐ ГўГµГ®Г¤ГЁГІ Гў Г¤Г°ГіГЈГЁГҐ Г°ГҐГЎГ°Г  (Г®Г­Г  ГЎГіГ¤ГҐГІ Г­Г Г·Г Г«ГјГ­Г®Г©)
 	int startVertex = -1;
 	for (const auto& edge : edges) {
 		if (inDegree[edge.first] == 0) {
@@ -51,19 +53,19 @@ vector<pair<int, int>> Branch::buildRoute(const vector<pair<int, int>>& edges)
 		}
 	}
 
-	// Если не нашли начальную вершину, то просто начинаем с первого ребра
+	// Г…Г±Г«ГЁ Г­ГҐ Г­Г ГёГ«ГЁ Г­Г Г·Г Г«ГјГ­ГіГѕ ГўГҐГ°ГёГЁГ­Гі, ГІГ® ГЇГ°Г®Г±ГІГ® Г­Г Г·ГЁГ­Г ГҐГ¬ Г± ГЇГҐГ°ГўГ®ГЈГ® Г°ГҐГЎГ°Г 
 	if (startVertex == -1) {
 		startVertex = edges[0].first;
 	}
 
-	// Строим маршрут
+	// Г‘ГІГ°Г®ГЁГ¬ Г¬Г Г°ГёГ°ГіГІ
 	vector<pair<int, int>> route;
 	int currentVertex = startVertex;
 
-	unordered_set<int> visited; // Множество для отслеживания посещённых вершин
+	unordered_set<int> visited; // ГЊГ­Г®Г¦ГҐГ±ГІГўГ® Г¤Г«Гї Г®ГІГ±Г«ГҐГ¦ГЁГўГ Г­ГЁГї ГЇГ®Г±ГҐГ№ВёГ­Г­Г»Гµ ГўГҐГ°ГёГЁГ­
 
 	while (nextVertex.find(currentVertex) != nextVertex.end()) {
-		// Если вершина уже была посещена, это значит, что есть цикл
+		// Г…Г±Г«ГЁ ГўГҐГ°ГёГЁГ­Г  ГіГ¦ГҐ ГЎГ»Г«Г  ГЇГ®Г±ГҐГ№ГҐГ­Г , ГЅГІГ® Г§Г­Г Г·ГЁГІ, Г·ГІГ® ГҐГ±ГІГј Г¶ГЁГЄГ«
 		if (visited.find(currentVertex) != visited.end()) {
 			return route;
 		}
@@ -82,7 +84,7 @@ vector<pair<int, int>> Branch::buildPathFromEdge(const vector<pair<int, int>>& e
 	unordered_map<int, int> nextVertex;
 	unordered_map<int, int> inDegree;
 
-	// Строим карту, где ключ - это вершина, а значение - вершина, в которую она ведет
+	// Г‘ГІГ°Г®ГЁГ¬ ГЄГ Г°ГІГі, ГЈГ¤ГҐ ГЄГ«ГѕГ· - ГЅГІГ® ГўГҐГ°ГёГЁГ­Г , Г  Г§Г­Г Г·ГҐГ­ГЁГҐ - ГўГҐГ°ГёГЁГ­Г , Гў ГЄГ®ГІГ®Г°ГіГѕ Г®Г­Г  ГўГҐГ¤ГҐГІ
 	for (const auto& edge : edges) {
 		nextVertex[edge.first] = edge.second;
 		inDegree[edge.second]++;
@@ -91,18 +93,18 @@ vector<pair<int, int>> Branch::buildPathFromEdge(const vector<pair<int, int>>& e
 		}
 	}
 
-	// Пытаемся начать с указанного ребра
+	// ГЏГ»ГІГ ГҐГ¬Г±Гї Г­Г Г·Г ГІГј Г± ГіГЄГ Г§Г Г­Г­Г®ГЈГ® Г°ГҐГЎГ°Г 
 	int startVertex = startEdge.first;
 	int currentVertex = startVertex;
 
 	vector<pair<int, int>> route;
 	bool foundStart = false;
 
-	// Ищем начальную точку для маршрута
+	// Г€Г№ГҐГ¬ Г­Г Г·Г Г«ГјГ­ГіГѕ ГІГ®Г·ГЄГі Г¤Г«Гї Г¬Г Г°ГёГ°ГіГІГ 
 	while (nextVertex.find(currentVertex) != nextVertex.end()) {
 		if (currentVertex == startVertex && !foundStart) {
 			foundStart = true;
-			route.push_back(startEdge);  // Начинаем с указанного ребра
+			route.push_back(startEdge);  // ГЌГ Г·ГЁГ­Г ГҐГ¬ Г± ГіГЄГ Г§Г Г­Г­Г®ГЈГ® Г°ГҐГЎГ°Г 
 			currentVertex = startEdge.second;
 		}
 		else {
@@ -119,25 +121,25 @@ vector<pair<int, int>> Branch::buildPathToEdge(const vector<pair<int, int>>& edg
 {
 	unordered_map<int, int> nextVertex;
 
-	// Строим карту, где ключ - это вершина, а значение - вершина, в которую она ведет
+	// Г‘ГІГ°Г®ГЁГ¬ ГЄГ Г°ГІГі, ГЈГ¤ГҐ ГЄГ«ГѕГ· - ГЅГІГ® ГўГҐГ°ГёГЁГ­Г , Г  Г§Г­Г Г·ГҐГ­ГЁГҐ - ГўГҐГ°ГёГЁГ­Г , Гў ГЄГ®ГІГ®Г°ГіГѕ Г®Г­Г  ГўГҐГ¤ГҐГІ
 	for (const auto& edge : edges) {
 		nextVertex[edge.first] = edge.second;
 	}
 
-	// Начинаем с конечного ребра
+	// ГЌГ Г·ГЁГ­Г ГҐГ¬ Г± ГЄГ®Г­ГҐГ·Г­Г®ГЈГ® Г°ГҐГЎГ°Г 
 	vector<pair<int, int>> route;
 	int currentVertex = endEdge.second;
 
-	// Строим маршрут, двигаясь от конечной вершины к начальной
+	// Г‘ГІГ°Г®ГЁГ¬ Г¬Г Г°ГёГ°ГіГІ, Г¤ГўГЁГЈГ ГїГ±Гј Г®ГІ ГЄГ®Г­ГҐГ·Г­Г®Г© ГўГҐГ°ГёГЁГ­Г» ГЄ Г­Г Г·Г Г«ГјГ­Г®Г©
 	while (nextVertex.find(currentVertex) != nextVertex.end()) {
 		int prevVertex = currentVertex;
 		currentVertex = nextVertex[currentVertex];
 
-		// Добавляем ребро в маршрут
+		// Г„Г®ГЎГ ГўГ«ГїГҐГ¬ Г°ГҐГЎГ°Г® Гў Г¬Г Г°ГёГ°ГіГІ
 		route.push_back({ currentVertex, prevVertex });
 	}
 
-	// Разворачиваем маршрут, чтобы он был построен от начальной вершины к конечной
+	// ГђГ Г§ГўГ®Г°Г Г·ГЁГўГ ГҐГ¬ Г¬Г Г°ГёГ°ГіГІ, Г·ГІГ®ГЎГ» Г®Г­ ГЎГ»Г« ГЇГ®Г±ГІГ°Г®ГҐГ­ Г®ГІ Г­Г Г·Г Г«ГјГ­Г®Г© ГўГҐГ°ГёГЁГ­Г» ГЄ ГЄГ®Г­ГҐГ·Г­Г®Г©
 	reverse(route.begin(), route.end());
 
 	return route;
